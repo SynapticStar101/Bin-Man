@@ -51,6 +51,7 @@ const popups = [];  // { x, y, text, life }
 // ── Initialise ────────────────────────────────────────────────────
 window.addEventListener('load', () => {
   resizeCanvas();
+  initMaze();          // populate mazeGrid so draw() never crashes on first frame
   loadHiScore();
   bindInput();
   showTouchControls();
@@ -342,9 +343,9 @@ function drawHUD() {
 
 // ── Loop ──────────────────────────────────────────────────────────
 function loop() {
-  update();
-  draw();
-  requestAnimationFrame(loop);
+  try { update(); } catch(e) { console.error('update error:', e); }
+  try { draw();   } catch(e) { console.error('draw error:', e); }
+  requestAnimationFrame(loop); // always re-queue — never let a JS error kill the loop
 }
 
 // ── Hi-score persistence ──────────────────────────────────────────

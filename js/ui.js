@@ -14,10 +14,25 @@ function uiText(ctx, text, x, y, size, colour, align) {
   ctx.fillText(text, x, y);
 }
 
+// Compatible rounded-rect (ctx.roundRect missing in older browsers / Safari < 15.4)
+function _roundRect(ctx, x, y, w, h, r) {
+  r = Math.min(r || 8, w / 2, h / 2);
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.arcTo(x + w, y,     x + w, y + r,     r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+  ctx.lineTo(x + r, y + h);
+  ctx.arcTo(x,     y + h, x,     y + h - r, r);
+  ctx.lineTo(x,     y + r);
+  ctx.arcTo(x,     y,     x + r, y,         r);
+  ctx.closePath();
+}
+
 function uiPanel(ctx, x, y, w, h, r) {
   ctx.fillStyle = COL.uiPanel;
-  ctx.beginPath();
-  ctx.roundRect(x, y, w, h, r || 8);
+  _roundRect(ctx, x, y, w, h, r);
   ctx.fill();
   ctx.strokeStyle = COL.uiGold;
   ctx.lineWidth = 2;

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>Barney-Man</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="wrapper">
+    <canvas id="gameCanvas"></canvas>
+    <!-- Touch controls for mobile -->
+    <div id="touchControls">
+      <div id="dpad">
+        <button class="dpadBtn" id="btnUp"    aria-label="Up">▲</button>
+        <button class="dpadBtn" id="btnLeft"  aria-label="Left">◀</button>
+        <button class="dpadBtn" id="btnDown"  aria-label="Down">▼</button>
+        <button class="dpadBtn" id="btnRight" aria-label="Right">▶</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Load order matters: config → sprites → audio → maze → entities → leaderboard → ui → game -->
+  <script src="js/config.js"></script>
+  <script src="js/sprites.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/maze.js"></script>
+  <script src="js/entities.js"></script>
+  <script src="js/leaderboard.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>

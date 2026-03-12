@@ -227,7 +227,7 @@ class Ghost {
       const exitC = tileCentre(GHOST_EXIT.col, GHOST_EXIT.row);
       const dx = exitC.x - this.px, dy = exitC.y - this.py;
       const dist = Math.sqrt(dx * dx + dy * dy);
-      const spd = this.speed * ts * (1 / 60);
+      const spd = (ts / 10) * this.speed;
       if (dist < spd) {
         this.px = exitC.x; this.py = exitC.y;
         this.col = GHOST_EXIT.col; this.row = GHOST_EXIT.row;

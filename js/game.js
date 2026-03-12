@@ -263,7 +263,6 @@ function update() {
   ghosts.forEach(g => g.update(gMode, level));
 
   // Collisions
-  _ghostEatCount = 0;
   checkCollisions();
 
   // Popups age

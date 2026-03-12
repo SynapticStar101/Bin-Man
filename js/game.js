@@ -328,7 +328,7 @@ function drawHUD() {
   // Lives (small Barney heads using procedural draw)
   const lifeR = HUD_H * 0.36;
   for (let i = 0; i < Math.min(lives, 5); i++) {
-    drawBarney(ctx, canvasW - 12 - (i * (lifeR * 2 + 4)), HUD_H / 2, lifeR, DIR.RIGHT, 0);
+    drawBarneyHUD(ctx, canvasW - 12 - (i * (lifeR * 2 + 4)), HUD_H / 2, lifeR);
   }
 
   // Level indicator

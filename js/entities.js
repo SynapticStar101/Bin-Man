@@ -31,6 +31,7 @@ const Barney = {
   chompTick: 0,
   alive: true,
   deathFrame: 0,
+  _snapped: false,        // prevents re-snapping to same tile centre every frame
 
   reset(level) {
     const c = tileCentre(START_BARNEY.col, START_BARNEY.row);
@@ -43,6 +44,7 @@ const Barney = {
     this.alive = true;
     this.chompTick = 0;
     this.deathFrame = 0;
+    this._snapped = false;
   },
 
   setDir(d) { this.nextDir = d; },
@@ -58,21 +60,26 @@ const Barney = {
     const nearCentreY = Math.abs(this.py - cx.y) < spd + 0.5;
 
     if (nearCentreX && nearCentreY) {
-      // Snap to centre
-      this.px = cx.x; this.py = cx.y;
+      if (!this._snapped) {
+        // Snap to centre (once per tile)
+        this._snapped = true;
+        this.px = cx.x; this.py = cx.y;
 
-      // Try queued direction
-      const nd = this.nextDir;
-      const nc = { col: this.col + nd.x, row: this.row + nd.y };
-      if (!isWall(nc.col, nc.row)) {
-        this.dir = nd;
-      }
+        // Try queued direction
+        const nd = this.nextDir;
+        const nc = { col: this.col + nd.x, row: this.row + nd.y };
+        if (!isWall(nc.col, nc.row)) {
+          this.dir = nd;
+        }
 
-      // Can we continue in current dir?
-      const fc = { col: this.col + this.dir.x, row: this.row + this.dir.y };
-      if (isWall(fc.col, fc.row)) {
-        return; // blocked — stay put
+        // Can we continue in current dir?
+        const fc = { col: this.col + this.dir.x, row: this.row + this.dir.y };
+        if (isWall(fc.col, fc.row)) {
+          return; // blocked — stay put
+        }
       }
+    } else {
+      this._snapped = false; // left the snap zone — allow snap at next tile
     }
 
     // Move
@@ -115,6 +122,7 @@ class Ghost {
     this.dotCounter = 0;   // dots eaten before this ghost leaves house
     this.dotLimit = [0, 0, 30, 60][id]; // Blinky leaves immediately
     this.exitTimer = 0;
+    this._snapped = false;
   }
 
   reset(level) {
@@ -129,6 +137,7 @@ class Ghost {
     this.speed = GHOST_SPEED[Math.min(level, GHOST_SPEED.length - 1)];
     this.dotCounter = 0;
     this.exitTimer = (this.id === 0) ? 0 : 60 + this.id * 40; // staggered release
+    this._snapped = false;
   }
 
   frighten(level) {
@@ -233,6 +242,7 @@ class Ghost {
         this.col = GHOST_EXIT.col; this.row = GHOST_EXIT.row;
         this.mode = globalMode === GHOST_MODE.FRIGHT ? GHOST_MODE.FRIGHT : GHOST_MODE.SCATTER;
         this.dir = DIR.LEFT;
+        this._snapped = false;
       } else {
         this.px += (dx / dist) * spd;
         this.py += (dy / dist) * spd;
@@ -262,6 +272,7 @@ class Ghost {
         this.col = GHOST_EXIT.col; this.row = GHOST_EXIT.row;
         this.mode = globalMode;
         this.dir = DIR.DOWN;
+        this._snapped = false;
         return;
       }
       // Navigate directly toward exit (ignore normal pathfinding)
@@ -280,10 +291,15 @@ class Ghost {
     const nearY = Math.abs(this.py - cx.y) < spd + 0.5;
 
     if (nearX && nearY) {
-      this.px = cx.x; this.py = cx.y;
-      // Choose next direction
-      const target = this._getTarget();
-      this.dir = this._chooseDir(target.col, target.row);
+      if (!this._snapped) {
+        this._snapped = true;
+        this.px = cx.x; this.py = cx.y;
+        // Choose next direction
+        const target = this._getTarget();
+        this.dir = this._chooseDir(target.col, target.row);
+      }
+    } else {
+      this._snapped = false;
     }
 
     this.px += this.dir.x * spd;

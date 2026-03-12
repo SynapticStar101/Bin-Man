@@ -78,13 +78,8 @@ function drawMenu(ctx, W, H, hiScore) {
   // Tagline
   uiText(ctx, 'THE RUBBISH ARCADE', W / 2, 112, 14, '#FF8C00');
 
-  // Barney-Man logo — static pixel-art face sprite
-  const sc = Math.max(3, Math.floor(tileSize * 0.28));
-  const sprW = S_BARNEY_CLOSED_R.d[0].length * sc;
-  drawSprite(ctx, S_BARNEY_CLOSED_R, W / 2 - sprW / 2, 140, sc);
-
   // Controls
-  uiPanel(ctx, panelX, 200, panelW, 95, 8);
+  uiPanel(ctx, panelX, 135, panelW, 95, 8);
   uiText(ctx, 'HOW TO PLAY', W / 2, 222, 13, COL.uiGold);
   uiText(ctx, 'ARROWS / WASD / SWIPE to move', W / 2, 244, 11, '#CCC');
   uiText(ctx, 'EAT ALL THE DOTS TO LEVEL UP', W / 2, 260, 11, '#CCC');

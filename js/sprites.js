@@ -186,6 +186,43 @@ const S_COFFEE = {
   ],
 };
 
+// ── drawBarneyHUD — side-view lorry for HUD lives indicator ──────
+// Drawn as a clear side-profile so it reads well at small sizes.
+function drawBarneyHUD(ctx, cx, cy, r) {
+  const w = r * 2.0;   // total length
+  const h = r * 1.15;  // total height (body above axle)
+  const wr = r * 0.24; // wheel radius
+
+  // Bin body (dark green, rear 60%)
+  ctx.fillStyle = '#1B5E20';
+  ctx.fillRect(cx - w * 0.5, cy - h * 0.5, w * 0.60, h);
+
+  // Hi-vis stripe
+  ctx.fillStyle = COL.hivis;
+  ctx.fillRect(cx - w * 0.5, cy - h * 0.08, w * 0.60, h * 0.18);
+
+  // Cab (lighter green, front 40%)
+  ctx.fillStyle = '#2E7D32';
+  ctx.fillRect(cx + w * 0.10, cy - h * 0.5, w * 0.40, h);
+
+  // Windscreen (blue)
+  ctx.fillStyle = '#42A5F5';
+  ctx.fillRect(cx + w * 0.16, cy - h * 0.44, w * 0.20, h * 0.50);
+
+  // Front bumper (grey)
+  ctx.fillStyle = '#546E7A';
+  ctx.fillRect(cx + w * 0.46, cy - h * 0.18, w * 0.04, h * 0.38);
+
+  // Wheels (circles, below body)
+  ctx.fillStyle = '#1A1A1A';
+  ctx.beginPath(); ctx.arc(cx - w * 0.25, cy + h * 0.5 - wr * 0.4, wr, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(cx + w * 0.28, cy + h * 0.5 - wr * 0.4, wr, 0, Math.PI * 2); ctx.fill();
+  // Hubcaps
+  ctx.fillStyle = '#777';
+  ctx.beginPath(); ctx.arc(cx - w * 0.25, cy + h * 0.5 - wr * 0.4, wr * 0.45, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(cx + w * 0.28, cy + h * 0.5 - wr * 0.4, wr * 0.45, 0, Math.PI * 2); ctx.fill();
+}
+
 // ── drawBarney — top-down bin wagon ──────────────────────────────
 // Overhead view of a bin lorry facing RIGHT at rot=0.
 // Rotated to match travel direction so it looks correct in all 4 dirs.

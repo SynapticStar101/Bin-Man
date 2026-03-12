@@ -71,12 +71,11 @@ const Barney = {
         if (!isWall(nc.col, nc.row)) {
           this.dir = nd;
         }
-
-        // Can we continue in current dir?
-        const fc = { col: this.col + this.dir.x, row: this.row + this.dir.y };
-        if (isWall(fc.col, fc.row)) {
-          return; // blocked — stay put
-        }
+      }
+      // Always block movement into walls, even after snapping
+      const fc = { col: this.col + this.dir.x, row: this.row + this.dir.y };
+      if (isWall(fc.col, fc.row)) {
+        return; // blocked — stay put
       }
     } else {
       this._snapped = false; // left the snap zone — allow snap at next tile

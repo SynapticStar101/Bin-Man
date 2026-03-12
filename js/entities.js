@@ -50,7 +50,7 @@ const Barney = {
   update() {
     if (!this.alive) return;
     const ts = tileSize;
-    const spd = this.speed * ts * (1 / 60); // px per frame at 60fps base
+    const spd = (ts / 10) * this.speed; // cross a tile in ~10 frames at speed 1.0
 
     // Try to switch to queued direction at tile centre
     const cx = tileCentre(this.col, this.row);
@@ -95,19 +95,7 @@ const Barney = {
 
   draw(ctx) {
     if (!this.alive) return;
-    const ts = tileSize;
-    const sc = Math.max(1, Math.floor(ts / 8));
-    const frame = getBarneyFrame(this.chompTick);
-    const sprW = frame.d[0].length * sc;
-    const sprH = frame.d.length * sc;
-    const flip = (this.dir === DIR.LEFT);
-    // Rotate for up/down travel
-    ctx.save();
-    ctx.translate(this.px, this.py);
-    if (this.dir === DIR.UP)   ctx.rotate(-Math.PI / 2);
-    if (this.dir === DIR.DOWN) ctx.rotate(Math.PI / 2);
-    drawSprite(ctx, frame, -sprW / 2, -sprH / 2, sc, flip);
-    ctx.restore();
+    drawBarney(ctx, this.px, this.py, tileSize * 0.48, this.dir, this.chompTick);
   },
 };
 
@@ -267,7 +255,7 @@ class Ghost {
       const ec = tileCentre(GHOST_EXIT.col, GHOST_EXIT.row);
       const dx = ec.x - this.px, dy = ec.y - this.py;
       const dist = Math.sqrt(dx * dx + dy * dy);
-      const spd = this.speed * ts * (1 / 60) * 2; // double speed when eaten
+      const spd = (ts / 10) * this.speed * 2; // double speed when eaten
       if (dist < spd) {
         // Re-enter house
         this.px = ec.x; this.py = ec.y;
@@ -286,8 +274,7 @@ class Ghost {
     }
 
     // Normal movement — tile-centre locked
-    const spd = this.speed * ts * (1 / 60) *
-      (this.mode === GHOST_MODE.FRIGHT ? FRIGHT_SPEED / this.speed : 1);
+    const spd = (ts / 10) * (this.mode === GHOST_MODE.FRIGHT ? FRIGHT_SPEED : this.speed);
     const cx = tileCentre(this.col, this.row);
     const nearX = Math.abs(this.px - cx.x) < spd + 0.5;
     const nearY = Math.abs(this.py - cx.y) < spd + 0.5;

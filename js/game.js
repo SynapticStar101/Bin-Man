@@ -326,12 +326,10 @@ function drawHUD() {
   ctx.textAlign = 'center';
   ctx.fillText('HI: ' + String(hiScore).padStart(7, '0'), canvasW / 2, HUD_H * 0.7);
 
-  // Lives (small Barney heads)
-  const lx = canvasW - 8;
+  // Lives (small Barney heads using procedural draw)
+  const lifeR = HUD_H * 0.36;
   for (let i = 0; i < Math.min(lives, 5); i++) {
-    const sc = Math.max(1, Math.floor(HUD_H / 14));
-    const sw = S_BARNEY_CLOSED_R.d[0].length * sc;
-    drawSprite(ctx, S_BARNEY_CLOSED_R, lx - (i + 1) * (sw + 2), 4, sc);
+    drawBarney(ctx, canvasW - 12 - (i * (lifeR * 2 + 4)), HUD_H / 2, lifeR, DIR.RIGHT, 0);
   }
 
   // Level indicator

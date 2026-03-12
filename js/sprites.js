@@ -187,13 +187,125 @@ const S_COFFEE = {
 };
 
 // ── Small dot (2×2 px drawn directly, no sprite needed) ───────────
-// ── Expose animation frames lookup ────────────────────────────────
-// Returns the correct Barney frame for the current chomp tick
+// ── getBarneyFrame kept for HUD menu sprite fallback ──────────────
 function getBarneyFrame(chompTick) {
-  // 0-3: open, 4-7: half, 8-11: closed, 12-15: half  (16-frame cycle)
+  return S_BARNEY_CLOSED_R; // used only on menu/hud pixel sprites
+}
+
+// ── drawBarney — procedural arc-based drawing ─────────────────────
+// Looks like a side-view of Barney's head with Pac-Man style chomping mouth.
+// cx,cy = centre pixel, radius = half the tile size, dir = DIR.*, chompTick = frame counter
+function drawBarney(ctx, cx, cy, radius, dir, chompTick) {
+  // Mouth angle oscillates: wide open → closed → wide open (16-frame cycle)
   const t = chompTick % 16;
-  if (t < 4)  return S_BARNEY_OPEN_R;
-  if (t < 8)  return S_BARNEY_HALF_R;
-  if (t < 12) return S_BARNEY_CLOSED_R;
-  return S_BARNEY_HALF_R;
+  let mouthFrac; // 0 = closed, 1 = wide open
+  if (t < 4)       mouthFrac = t / 4;            // opening
+  else if (t < 8)  mouthFrac = 1 - (t - 4) / 4; // closing
+  else if (t < 12) mouthFrac = 0;                // closed
+  else             mouthFrac = (t - 12) / 4;     // opening again
+  const mouthAngle = mouthFrac * 0.28 * Math.PI; // max ~50° opening
+
+  // Rotation so mouth always faces travel direction
+  let rot = 0;
+  if (dir === DIR.LEFT)  rot = Math.PI;
+  if (dir === DIR.UP)    rot = -Math.PI / 2;
+  if (dir === DIR.DOWN)  rot = Math.PI / 2;
+
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.rotate(rot);
+
+  const r = radius;
+
+  // ── Face (skin) — Pac-Man arc with mouth wedge cut out ──
+  ctx.fillStyle = COL.skin;
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.arc(0, 0, r, mouthAngle, Math.PI * 2 - mouthAngle);
+  ctx.closePath();
+  ctx.fill();
+
+  // ── Darker chin/jaw lower half ──
+  ctx.fillStyle = COL.skinDk;
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.arc(0, 0, r, 0.1 * Math.PI, 0.9 * Math.PI);
+  ctx.closePath();
+  ctx.fill();
+
+  // Redraw upper face over the chin tint
+  ctx.fillStyle = COL.skin;
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.arc(0, 0, r, -Math.PI, 0);
+  ctx.closePath();
+  ctx.fill();
+
+  // Re-apply mouth cut so it shows through
+  if (mouthAngle > 0.01) {
+    ctx.fillStyle = '#000';
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.arc(0, 0, r + 1, -mouthAngle, mouthAngle);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  // ── Hi-vis cap — arc across the top of the head ──
+  ctx.fillStyle = COL.hivis;
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.arc(0, 0, r, -Math.PI * 0.85, -Math.PI * 0.15);
+  ctx.closePath();
+  ctx.fill();
+
+  // Cap peak / brim (small rectangle poking forward at -top-right)
+  ctx.fillStyle = COL.hivOrg;
+  ctx.beginPath();
+  ctx.arc(0, 0, r * 1.18, -Math.PI * 0.22, -Math.PI * 0.08);
+  ctx.lineTo(r * 0.9, -r * 0.05);
+  ctx.closePath();
+  ctx.fill();
+
+  // Dark hair peeking below cap brim
+  ctx.fillStyle = COL.hair;
+  ctx.beginPath();
+  ctx.arc(0, 0, r * 0.92, -Math.PI * 0.84, -Math.PI * 0.16);
+  ctx.lineTo(0, 0);
+  ctx.closePath();
+  ctx.fill();
+
+  // ── Eye (white + iris + pupil) ──
+  const ex = r * 0.22, ey = -r * 0.28;
+  ctx.fillStyle = COL.eyeWhite;
+  ctx.beginPath();
+  ctx.arc(ex, ey, r * 0.22, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = COL.eye;
+  ctx.beginPath();
+  ctx.arc(ex + r * 0.06, ey, r * 0.13, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = COL.pupil;
+  ctx.beginPath();
+  ctx.arc(ex + r * 0.08, ey, r * 0.06, 0, Math.PI * 2);
+  ctx.fill();
+
+  // ── Mouth interior (red) when open ──
+  if (mouthAngle > 0.04) {
+    ctx.fillStyle = COL.mouthInner;
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.arc(0, 0, r * 0.92, -mouthAngle * 0.8, mouthAngle * 0.8);
+    ctx.closePath();
+    ctx.fill();
+    // Teeth (white strip at mouth edge)
+    ctx.fillStyle = COL.teeth;
+    ctx.beginPath();
+    ctx.arc(0, 0, r * 0.88, -mouthAngle * 0.3, mouthAngle * 0.3);
+    ctx.lineTo(r * 0.5, 0);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  ctx.restore();
 }

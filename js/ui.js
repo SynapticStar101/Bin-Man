@@ -78,12 +78,8 @@ function drawMenu(ctx, W, H, hiScore) {
   // Tagline
   uiText(ctx, 'THE RUBBISH ARCADE', W / 2, 112, 14, '#FF8C00');
 
-  // Barney-Man logo (animated chomp)
-  const logoSc = Math.max(2, Math.floor(tileSize / 6));
-  const frame  = getBarneyFrame(Math.floor(_menuScroll * 2));
-  const sprW   = frame.d[0].length * logoSc;
-  const sprH   = frame.d.length * logoSc;
-  drawSprite(ctx, frame, W / 2 - sprW / 2, 130, logoSc);
+  // Barney-Man logo (animated chomp — procedural)
+  drawBarney(ctx, W / 2, 158, 28, DIR.RIGHT, Math.floor(_menuScroll * 2));
 
   // Controls
   uiPanel(ctx, panelX, 200, panelW, 95, 8);

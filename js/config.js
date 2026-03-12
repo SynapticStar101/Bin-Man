@@ -65,8 +65,8 @@ const SCORE = {
 
 // ── Ghost speed profiles per level ────────────────────────────────
 // fraction of tile-per-frame
-const GHOST_SPEED = [0, 0.75, 0.80, 0.85, 0.90, 0.95, 1.00, 1.00, 1.00, 1.00];
-const BARNEY_SPEED= [0, 0.80, 0.85, 0.87, 0.90, 0.92, 0.95, 0.95, 0.95, 0.95];
+const GHOST_SPEED = [0, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.80, 0.80, 0.80];
+const BARNEY_SPEED= [0, 0.60, 0.65, 0.67, 0.70, 0.72, 0.75, 0.75, 0.75, 0.75];
 const FRIGHT_TIME = [0,  360,  300,  240,  180,  120,   60,    5,    5,    5]; // frames
 const FRIGHT_SPEED= 0.50;  // ghost speed when frightened
 

@@ -35,7 +35,7 @@ function getLocalScores() {
 
 function saveLocalScore(name, pts) {
   const scores = getLocalScores();
-  scores.push({ name: name.substring(0, 12).toUpperCase(), score: pts, date: Date.now() });
+  scores.push({ name: name.substring(0, 8).toUpperCase(), score: pts, date: Date.now() });
   scores.sort((a, b) => b.score - a.score);
   scores.splice(MAX_SCORES);
   localStorage.setItem(LS_KEY, JSON.stringify(scores));
@@ -65,7 +65,7 @@ async function pushGlobalScore(name, pts) {
   try {
     // Read current
     const current = await fetchGlobalScores() || [];
-    current.push({ name: name.substring(0, 12).toUpperCase(), score: pts, date: Date.now() });
+    current.push({ name: name.substring(0, 8).toUpperCase(), score: pts, date: Date.now() });
     current.sort((a, b) => b.score - a.score);
     current.splice(MAX_SCORES);
 
@@ -90,7 +90,7 @@ function ensureNameOverlay() {
     <div id="nameBox">
       <h2>NEW HIGH SCORE!</h2>
       <p id="nameScoreDisplay" style="color:#FFD700;margin-bottom:12px;font-size:18px;"></p>
-      <input id="nameInput" maxlength="12" placeholder="YOUR NAME" autocomplete="off" spellcheck="false">
+      <input id="nameInput" maxlength="8" placeholder="YOUR NAME" autocomplete="off" spellcheck="false">
       <button id="nameSubmit">SUBMIT</button>
     </div>`;
   document.body.appendChild(div);

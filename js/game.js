@@ -55,7 +55,7 @@ window.addEventListener('load', () => {
   loadHiScore();
   bindInput();
   showTouchControls();
-  loop();
+  requestAnimationFrame(loop);
 });
 window.addEventListener('resize', resizeCanvas);
 
@@ -339,9 +339,13 @@ function drawHUD() {
 }
 
 // ── Loop ──────────────────────────────────────────────────────────
-function loop() {
-  try { update(); } catch(e) { console.error('update error:', e); }
-  try { draw();   } catch(e) { console.error('draw error:', e); }
+let _prevTime = 0;
+function loop(now) {
+  if (now - _prevTime >= 16) { // cap at ~60fps regardless of monitor refresh rate
+    _prevTime = now;
+    try { update(); } catch(e) { console.error('update error:', e); }
+    try { draw();   } catch(e) { console.error('draw error:', e); }
+  }
   requestAnimationFrame(loop); // always re-queue — never let a JS error kill the loop
 }
 

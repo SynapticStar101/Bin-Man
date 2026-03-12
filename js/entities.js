@@ -75,6 +75,7 @@ const Barney = {
       // Always block movement into walls, even after snapping
       const fc = { col: this.col + this.dir.x, row: this.row + this.dir.y };
       if (isWall(fc.col, fc.row)) {
+        this._snapped = false; // allow re-checking nextDir next frame
         return; // blocked — stay put
       }
     } else {

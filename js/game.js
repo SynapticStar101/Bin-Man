@@ -13,13 +13,33 @@ let canvasW = 560, canvasH = 620; // logical size; scaled by CSS
 
 function resizeCanvas() {
   const vw = window.innerWidth, vh = window.innerHeight;
-  const touchH = isTouchDevice() ? 160 : 0;
-  const avail  = Math.min(vw, (vh - touchH) * (canvasW / canvasH));
-  const scale  = avail / canvasW;
+  const touch = isTouchDevice();
+  const isLandscape = vw > vh;
+
+  // In landscape on touch, d-pad sits to the side; in portrait, it sits below
+  const touchW = (touch && isLandscape)  ? 112 : 0;
+  const touchH = (touch && !isLandscape) ? 160 : 0;
+
+  const avail = Math.min(vw - touchW, (vh - touchH) * (canvasW / canvasH));
+  const scale = avail / canvasW;
   canvas.width  = canvasW;
   canvas.height = canvasH;
   canvas.style.width  = Math.floor(canvasW * scale) + 'px';
   canvas.style.height = Math.floor(canvasH * scale) + 'px';
+
+  // Rearrange wrapper so controls are beside the canvas in landscape
+  const wrapper = document.getElementById('wrapper');
+  const tc = document.getElementById('touchControls');
+  if (touch && isLandscape) {
+    wrapper.style.flexDirection = 'row';
+    wrapper.style.alignItems    = 'center';
+    if (tc) { tc.style.marginTop = '0'; tc.style.marginLeft = '8px'; }
+  } else {
+    wrapper.style.flexDirection = 'column';
+    wrapper.style.alignItems    = 'center';
+    if (tc) { tc.style.marginTop = '12px'; tc.style.marginLeft = ''; }
+  }
+
   setMazeLayout(canvasW, canvasH, HUD_H);
 }
 

@@ -59,6 +59,22 @@ html, body {
 #btnLeft  { left: 0;  top: 50%; transform: translateY(-50%); }
 #btnRight { right:0;  top: 50%; transform: translateY(-50%); }
 
+/* ── Landscape mobile: shrink d-pad so the canvas gets priority ── */
+@media (orientation: landscape) and (pointer: coarse) {
+  #gameCanvas {
+    max-height: 100vh;
+  }
+  #dpad {
+    width: 96px;
+    height: 96px;
+  }
+  .dpadBtn {
+    width: 30px;
+    height: 30px;
+    font-size: 13px;
+  }
+}
+
 /* ── Name-entry overlay (high score) ── */
 #nameOverlay {
   display: none;

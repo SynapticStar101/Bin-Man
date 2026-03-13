@@ -143,22 +143,3 @@ function sfxExtraLife() {
   });
 }
 
-// Siren (ghost chase) — looping background wail
-// Returns a stop function
-function startSiren(frightened) {
-  if (_muted) return () => {};
-  const ctx = getACtx();
-  let running = true;
-  let t = ctx.currentTime;
-  const lo = frightened ? 180 : 340;
-  const hi = frightened ? 260 : 480;
-
-  function pulse() {
-    if (!running || _muted) return;
-    const now = ctx.currentTime;
-    sweep('square', lo, hi, now, 0.18, 0.06, ctx);
-    setTimeout(pulse, frightened ? 300 : 180);
-  }
-  pulse();
-  return function stop() { running = false; };
-}

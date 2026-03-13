@@ -17,6 +17,14 @@ html, body {
   width: 100%; height: 100%;
 }
 
+/* On touch devices push canvas to the top so it fills more screen */
+@media (pointer: coarse) {
+  #wrapper {
+    justify-content: flex-start;
+    padding-top: env(safe-area-inset-top, 4px);
+  }
+}
+
 #gameCanvas {
   display: block;
   image-rendering: pixelated;
@@ -34,18 +42,18 @@ html, body {
 
 #dpad {
   position: relative;
-  width: 140px;
-  height: 140px;
+  width: 116px;
+  height: 116px;
 }
 
 .dpadBtn {
   position: absolute;
-  width: 44px; height: 44px;
+  width: 36px; height: 36px;
   background: rgba(255,215,0,0.15);
   border: 2px solid #FFD700;
   border-radius: 8px;
   color: #FFD700;
-  font-size: 18px;
+  font-size: 15px;
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
@@ -58,22 +66,6 @@ html, body {
 #btnDown  { bottom:0; left: 50%; transform: translateX(-50%); }
 #btnLeft  { left: 0;  top: 50%; transform: translateY(-50%); }
 #btnRight { right:0;  top: 50%; transform: translateY(-50%); }
-
-/* ── Landscape mobile: shrink d-pad so the canvas gets priority ── */
-@media (orientation: landscape) and (pointer: coarse) {
-  #gameCanvas {
-    max-height: 100vh;
-  }
-  #dpad {
-    width: 96px;
-    height: 96px;
-  }
-  .dpadBtn {
-    width: 30px;
-    height: 30px;
-    font-size: 13px;
-  }
-}
 
 /* ── Name-entry overlay (high score) ── */
 #nameOverlay {

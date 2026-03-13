@@ -13,33 +13,13 @@ let canvasW = 560, canvasH = 620; // logical size; scaled by CSS
 
 function resizeCanvas() {
   const vw = window.innerWidth, vh = window.innerHeight;
-  const touch = isTouchDevice();
-  const isLandscape = vw > vh;
-
-  // In landscape on touch, d-pad sits to the side; in portrait, it sits below
-  const touchW = (touch && isLandscape)  ? 112 : 0;
-  const touchH = (touch && !isLandscape) ? 160 : 0;
-
-  const avail = Math.min(vw - touchW, (vh - touchH) * (canvasW / canvasH));
-  const scale = avail / canvasW;
+  const touchH = isTouchDevice() ? 128 : 0;
+  const avail  = Math.min(vw, (vh - touchH) * (canvasW / canvasH));
+  const scale  = avail / canvasW;
   canvas.width  = canvasW;
   canvas.height = canvasH;
   canvas.style.width  = Math.floor(canvasW * scale) + 'px';
   canvas.style.height = Math.floor(canvasH * scale) + 'px';
-
-  // Rearrange wrapper so controls are beside the canvas in landscape
-  const wrapper = document.getElementById('wrapper');
-  const tc = document.getElementById('touchControls');
-  if (touch && isLandscape) {
-    wrapper.style.flexDirection = 'row';
-    wrapper.style.alignItems    = 'center';
-    if (tc) { tc.style.marginTop = '0'; tc.style.marginLeft = '8px'; }
-  } else {
-    wrapper.style.flexDirection = 'column';
-    wrapper.style.alignItems    = 'center';
-    if (tc) { tc.style.marginTop = '12px'; tc.style.marginLeft = ''; }
-  }
-
   setMazeLayout(canvasW, canvasH, HUD_H);
 }
 
@@ -61,9 +41,6 @@ let stateTimer = 0;   // countdown for timed state transitions
 let ghostModeIdx  = 0;
 let ghostModeTimer= 0;
 let globalGhostMode = 'scatter';
-
-// Siren handle
-let sirenStop = () => {};
 
 // Score pop-ups
 const popups = [];  // { x, y, text, life }
@@ -144,8 +121,6 @@ function beginLevel() {
   ghostModeIdx = 0;
   ghostModeTimer = GHOST_TIMERS[0];
   globalGhostMode = 'scatter';
-  sirenStop();
-  sirenStop = startSiren(false);
   setState(STATE.READY, 180); // 3-second ready pause
 }
 
@@ -161,8 +136,6 @@ function addScore(pts, px, py) {
 }
 
 function killBarney() {
-  sirenStop();
-  sirenStop = () => {};
   sfxDeath();
   setState(STATE.DEAD, 120); // show death for 2 seconds
   lives--;
@@ -204,14 +177,8 @@ function checkCollisions() {
   } else if (eaten === 'power') {
     addScore(SCORE.powerUp);
     sfxCoffee();
-    sirenStop();
-    sirenStop = startSiren(true);
     ghosts.forEach(g => g.frighten(level));
     resetGhostCombo();
-    setTimeout(() => {
-      sirenStop();
-      sirenStop = startSiren(false);
-    }, FRIGHT_TIME[Math.min(level, FRIGHT_TIME.length - 1)] * (1000 / 60));
   }
 
   // Ghost collisions
@@ -253,7 +220,6 @@ function update() {
       } else {
         resetAllEntities(level);
         setState(STATE.READY, 120);
-        sirenStop = startSiren(false);
       }
     }
     return;
@@ -294,8 +260,6 @@ function update() {
 
   // Level clear
   if (allDotsEaten()) {
-    sirenStop();
-    sirenStop = () => {};
     sfxLevelUp();
     startMazeFlash();
     setState(STATE.LEVELUP, 0);

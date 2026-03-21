@@ -117,7 +117,7 @@ function promptForName(pts, onDone) {
   }
 
   btn.onclick = submit;
-  input.onkeydown = e => { if (e.key === 'Enter') submit(); };
+  input.onkeydown = e => { if (e.key === 'Enter') { e.stopPropagation(); submit(); } };
 }
 
 // ── Merged leaderboard for display ────────────────────────────────

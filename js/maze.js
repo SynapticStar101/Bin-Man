@@ -150,8 +150,12 @@ function startMazeFlash() { _flashTimer = 60; } // 1 second at 60fps
 function updateMazeFlash() {
   if (_flashTimer > 0) {
     _flashTimer--;
+    if (_flashTimer <= 0) {
+      _flashOn = false;
+      return false;
+    }
     _flashOn = Math.floor(_flashTimer / 8) % 2 === 0;
-    return _flashTimer > 0;
+    return true;
   }
   _flashOn = false;
   return false;
